@@ -1,0 +1,71 @@
+version: 2
+
+sources:
+  - name: airbnb
+    description: "Source data for Airbnb analytics project"
+    schema: airbnb   # adjust this to your actual schema
+    tables:
+      - name: listings
+        description: "Contains property listings with details about each rental."
+        columns:
+          - name: listing_id
+            description: "Unique identifier for each listing."
+            tests:
+              - unique
+              - not_null
+          - name: listing_url
+            description: "URL to the listing page."
+          - name: name
+            description: "Name/title of the property."
+          - name: room_type
+            description: "Type of room offered (Entire home, Private room, etc.)."
+          - name: minimum_nights
+            description: "Minimum nights required to book."
+          - name: host_id
+            description: "Reference to the host who owns this listing."
+          - name: price
+            description: "Listing price per night."
+          - name: created_at
+            description: "Record creation timestamp."
+          - name: updated_at
+            description: "Record last update timestamp."
+
+      - name: hosts
+        description: "Information about property owners/hosts."
+        columns:
+          - name: host_id
+            description: "Unique identifier for each host."
+            tests:
+              - unique
+              - not_null
+          - name: name
+            description: "Name of the host."
+          - name: is_superhost
+            description: "Indicates whether the host is a superhost."
+          - name: created_at
+            description: "Record creation timestamp."
+          - name: updated_at
+            description: "Record last update timestamp."
+
+      - name: reviews
+        description: "Guest reviews for property listings."
+        columns:
+          - name: review_id
+            description: "Unique identifier for each review."
+            tests:
+              - unique
+              - not_null
+          - name: listing_id
+            description: "Reference to the listing being reviewed."
+            tests:
+              - relationships:
+                  to: source('airbnb', 'listings')
+                  field: listing_id
+          - name: date
+            description: "Date the review was left."
+          - name: reviewer_name
+            description: "Name of the reviewer."
+          - name: comments
+            description: "Text of the review."
+          - name: sentiment
+            description: "Sentiment classification of the review (positive, negative, neutral)."
