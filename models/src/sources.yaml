@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: airbnb
     description: "Source data for Airbnb analytics project"
-    schema: airbnb   # adjust this to your actual schema
+    schema: airbnb   
     tables:
       - name: listings
         description: "Contains property listings with details about each rental."
@@ -69,3 +69,25 @@ sources:
             description: "Text of the review."
           - name: sentiment
             description: "Sentiment classification of the review (positive, negative, neutral)."
+
+exposures:
+  - name: host_performance_dashboard
+    label: Host Performance Comparison
+    type: dashboard
+    maturity: high
+    url: "https://bi-tool.com/dashboard/host-performance"
+    description: >
+      Host Performance Dashboard aggregates host-level metrics such as
+      review count, average sentiment score, and average price per listing. 
+      Used by operations and business teams for performance tracking.
+
+    depends_on:
+      - ref('agg_host_performance')
+      - ref('agg_listing_performance')
+      - ref('fact_reviews')
+      - ref('dim_host')
+      - ref('dim_listing')
+
+    owner:
+      name: Ethan Nguyen
+      email: ethan.nguyen@airbnb.com 
