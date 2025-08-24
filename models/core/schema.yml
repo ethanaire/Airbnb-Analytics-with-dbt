@@ -3,6 +3,8 @@ version: 2
 models:
   - name: dim_host
     description: "Dimension table for Airbnb hosts."
+    config:
+      materialized: incremental
     columns:
       - name: host_id
         description: "Unique identifier for each host."
@@ -26,5 +28,118 @@ models:
 
       - name: created_at
         description: "Record creation timestamp."
+        tests: 
+          - no_future_dates
+
       - name: updated_at
         description: "Record last update timestamp."
+        tests: 
+          - no_future_dates
+
+  - name: dim_listing
+    description: "Dimension table for Airbnb property listings."
+    config:
+      materialized: incremental
+    columns:
+      - name: listing_id
+        description: "Unique identifier for each listing."
+        tests:
+          - unique
+          - not_null
+
+      - name: listing_name
+        description: "Name/title of the property."
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "length(listing_name) >= 5"
+
+      - name: room_type
+        description: "Type of room offered."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Entire home/apt", "Private room", "Shared room", "Hotel room"]
+
+      - name: minimum_nights
+        description: "Minimum nights required to book."
+        tests:
+          - not_null
+          - values_in_range: 
+              min_value: "{{ var('min_minimum_nights') }}"
+              max_value: "{{ var('max_minimum_nights') }}"
+
+      - name: price
+        description: "Listing price per night."
+        tests:
+          - not_null
+          - values_in_range:
+              min_value: "{{ var('min_price') }}"
+              max_value: "{{ var('max_price') }}"
+
+      - name: host_id
+        description: "Numeric identifier of the host for this listing."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_host')
+              field: host_id
+
+      - name: listing_url
+        description: "Domain of the listing's url"
+
+  - name: fact_reviews
+    description: "Fact table containing Airbnb guest reviews, one row per review."
+    config:
+      materialized: incremental
+    columns:
+      - name: review_id
+        description: "Unique identifier for each review."
+        tests:
+          - unique
+          - not_null
+
+      - name: listing_id
+        description: "Reference to the listing being reviewed."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_listing')
+              field: listing_id
+
+      - name: host_id
+        description: "Reference to the host who owns the reviewed listing."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_host')
+              field: host_id
+
+      - name: review_date
+        description: "Date the review was submitted."
+        tests:
+          - not_null
+          - values_in_range:
+              min_value: "{{ var('start_date') }}"
+              max_value: "{{ var('end_date') }}"
+
+      - name: reviewer_name
+        description: "Name of the reviewer."
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "length(reviewer_name) between 2 and 100"
+
+      - name: sentiment
+        description: "Sentiment classification of the review."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["positive", "neutral", "negative"]
+
+      - name: date_key
+        description: "Reference to the date ID of the dim_date table."
+        tests: 
+          - relationships:
+              to: ref('dim_date')
+              field: date_id
