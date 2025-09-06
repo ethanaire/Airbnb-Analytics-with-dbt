@@ -83,7 +83,7 @@ exposures:
 
     depends_on:
       - ref('agg_host_performance')
-      - ref('agg_listing_performance')
+      - ref('agg_reviews_by_listing')
       - ref('fact_reviews')
       - ref('dim_host')
       - ref('dim_listing')
