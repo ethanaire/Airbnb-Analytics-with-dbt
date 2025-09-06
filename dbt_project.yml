@@ -38,23 +38,23 @@ quoting:
   schema: false
   identifier: false
 
-# prevent dbt Cloud from appending user prefix
+# Prevent dbt Cloud from appending user prefix
 dispatch:
   - macro_namespace: dbt
     search_order: ['dbt', 'airbnb']
 
 models:
   airbnb:
-    # Applies to all files under models/
+    # Applied to all files under models/
     +schema: airbnb
     +materialized: table
 
 seeds:
  airbnb: 
-    # Applies to the airbnb project
+    # Applied to the airbnb project
       +schema: airbnb
 
-# define reusable variables
+# Define reusable variables
 vars: 
   start_date: '2000-01-01'
   end_date: current_date + 1
