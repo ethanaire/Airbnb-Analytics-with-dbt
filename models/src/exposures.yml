@@ -1,0 +1,23 @@
+version: 2
+
+exposures:
+  - name: host_performance_dashboard
+    label: Host Performance Comparison
+    type: dashboard
+    maturity: high
+    url: "https://bi-tool.com/dashboard/host-performance"
+    description: >
+      Host Performance Dashboard aggregates host-level metrics such as
+      review count, average sentiment score, and average price per listing. 
+      Used by operations and business teams for performance tracking.
+
+    depends_on:
+      - ref('agg_host_performance')
+      - ref('agg_reviews_by_listing')
+      - ref('fact_reviews')
+      - ref('dim_host')
+      - ref('dim_listing')
+
+    owner:
+      name: Ethan Nguyen
+      email: ethan.nguyen@airbnb.com 
