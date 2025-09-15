@@ -1,8 +1,7 @@
-{{ config
-    (
-        materialized='view'
-    ) 
-}}
+{{ config(
+        materialized='view',
+        tags=['staging', 'reviews']
+) }}
 
 select 
     "review_id" as review_id,
