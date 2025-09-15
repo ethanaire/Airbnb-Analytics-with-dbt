@@ -1,7 +1,7 @@
 {{ config(
         materialized='incremental',
         unique_key='host_id',
-        tags=['dimension', 'host']
+        tags=['core', 'dimensions']
 ) }}
 
 with dim_hosts as (
