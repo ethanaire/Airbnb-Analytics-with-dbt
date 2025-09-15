@@ -1,6 +1,7 @@
 {{ config(
     materialized='incremental',
-    unique_key='review_id'
+    unique_key='review_id',
+    tags=['fact', 'reviews']
 ) }}
 
 with fact_reviews as (
