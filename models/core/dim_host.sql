@@ -1,9 +1,8 @@
-{{ 
-    config(
+{{ config(
         materialized='incremental',
-        unique_key='host_id'
-    ) 
-}}
+        unique_key='host_id',
+        tags=['dimension', 'host']
+) }}
 
 with dim_hosts as (
     select
