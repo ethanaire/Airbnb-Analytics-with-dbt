@@ -1,9 +1,8 @@
-{{ config
-    (
+{{ config(
         materialized='incremental',
-        unique_key='listing_id'
-    ) 
-}}
+        unique_key='listing_id',
+        tags=['dimension', 'listing']
+) }}
 
 with dim_listing as (
     select
