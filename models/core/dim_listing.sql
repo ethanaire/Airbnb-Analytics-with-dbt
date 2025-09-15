@@ -1,7 +1,7 @@
 {{ config(
         materialized='incremental',
         unique_key='listing_id',
-        tags=['dimension', 'listing']
+        tags=['core', 'dimensions']
 ) }}
 
 with dim_listing as (
